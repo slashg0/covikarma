@@ -9,3 +9,55 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
+enum provision_type {
+  remdesivir
+  tocilizumab
+  bed_normal
+  bed_icu
+  covid_home_test
+}
+
+model Human {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  first_name String
+  last_name  String
+  phone      String?
+  email      String
+  needs      Need[]
+}
+
+model Need {
+  id          Int            @id @default(autoincrement())
+  created_at  DateTime       @default(now())
+  updated_at  DateTime       @updatedAt
+  title       String
+  description String?        @db.VarChar(255)
+  type        provision_type
+  human_id    Int
+  human       Human          @relation(fields: [human_id], references: [id])
+}
+
+model Store {
+
+  id             Int      @id @default(autoincrement())
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  email          String   @unique
+  name           String?
+  address_line_1 String
+  address_line_2 String?
+  lat            Decimal?
+  long           Decimal?
+}
+
+model Product {
+  id          Int            @id @default(autoincrement())
+  created_at  DateTime       @default(now())
+  updated_at  DateTime       @updatedAt
+  title       String
+  description String?        @db.VarChar(255)
+  type        provision_type
+}
